@@ -185,24 +185,35 @@ $(function(){
         });
     });
     
-    //Editar
-    var formeditar = $('form[name="editarnivel"]');
+    //Lista de Chamada
+    var lista = $('form[name="lista"]');
+    var listarlista = ('.loadlista');
+    var list = ('.lista');
     
-    listarnivel.on('click', '.j_editar', function(){
-        var ideditar = $(this).attr("id");
-        var consult = "acao=consulta&editarid="+ideditar;
-        var liaction = $('tr[class="j_'+ideditar+'"]');
+    //listarlista.on('click', '.lista', function(){
+      //  var listar = $(this).attr("id");
+      //  var consult = "acao=consulta&listarid="+listar;
+    //});
         
-        $.ajax({
-            data:       consult,
-            beforeSend: '',
-            error:      '',
-            seccess:    function(retorno){
-                alert(retorno);
-            }
+        function carregarlista( instrucao ){
+            $.ajax({
+                data:       instrucao,
+                beforeSend: '',
+                error:      '',
+                seccess:    function( leitura ){
+                    listarlista.append( leitura );
+
+                }
+            });
+        }
+        
+        carregarlista("acao=consulta");
+        
+        list.click(function(){
+            listarlista.empty();
+
+            carregarlista("acao=consulta");
         });
-        
-    });
     
 });
 

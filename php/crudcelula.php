@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once ('conexao.php');
 
 sleep(1);
@@ -30,25 +31,55 @@ switch ($_POST['acao']){
     break;
     
     case 'ler':
-
-        $query  = "SELECT * FROM rel_celula ORDER BY nome_celula ASC";
-        $st     = mysqli_query($conexao, $query) or die ('errosend');
-        if(mysqli_num_rows($st) >=1){
-            while($res = mysqli_fetch_assoc($st)):
-                echo    '<tr class="j_'.$res['id_celula'].'">'
-                        .'<td>'.$res['id_celula'].'</td>'
-                        .'<td>'.$res['nome_celula'].'</td>'
-                        .'<td>'.$res['rede_rede'].'</td>'
-                        .'<td>'.$res['id_lider'].'</td>'
-                        .'<td>' 
-                        .'<button type="button" id="'.$res['id_celula'].'" class="btn btn-default j_editar" data-toggle="modal" data-target="#modaleditar"><i class="glyphicon glyphicon-cog"></i> &nbsp;Editar</button>&nbsp;'
-                        .'<button type="button" id="'.$res['id_celula'].'" class="btn btn-danger excluir"><i class="glyphicon glyphicon-trash"></i> &nbsp;Excluir</button>'
-                        .'</td>'
-                        .'</tr>';
-            endwhile;
+        
+        $nivel = $_SESSION['nivel_id'];
+        $id = $_SESSION['id_usuario'];
+        
+        if(($nivel == "Admin") || ($nivel == "Pastor")){
+            $query  = "SELECT * FROM rel_celula ORDER BY nome_celula ASC";
+            $st     = mysqli_query($conexao, $query) or die ('errosend');
+            if(mysqli_num_rows($st) >=1){
+                while($res = mysqli_fetch_assoc($st)):
+                    echo    '<tr class="j_'.$res['id_celula'].'">'
+                            .'<td>'.$res['id_celula'].'</td>'
+                            .'<td>'.$res['nome_celula'].'</td>'
+                            .'<td>'.$res['rede_rede'].'</td>'
+                            .'<td>'.$res['id_lider'].'</td>'
+                            .'<td>' 
+                            .'<button type="button" id="'.$res['id_celula'].'" class="btn btn-default j_editar" data-toggle="modal" data-target="#modaleditar"><i class="glyphicon glyphicon-cog"></i> &nbsp;Editar</button>&nbsp;'
+                            .'<button type="button" id="'.$res['id_celula'].'" class="btn btn-danger excluir"><i class="glyphicon glyphicon-trash"></i> &nbsp;Excluir</button>'
+                            .'</td>'
+                            .'</tr>';
+                endwhile;
+            }else{
+                echo 'noresult';
+            }
+            
+        }elseif (($nivel == "Lider") || ($nivel == "Discipulador")) {
+            $query  = "SELECT * FROM rel_celula WHERE id_lider = '$id' ORDER BY nome_celula ASC";
+            $st     = mysqli_query($conexao, $query) or die ('errosend');
+            if(mysqli_num_rows($st) >=1){
+                while($res = mysqli_fetch_assoc($st)):
+                    echo    '<tr class="j_'.$res['id_celula'].'">'
+                            .'<td>'.$res['id_celula'].'</td>'
+                            .'<td>'.$res['nome_celula'].'</td>'
+                            .'<td>'.$res['rede_rede'].'</td>'
+                            .'<td>'.$res['id_lider'].'</td>'
+                            .'<td>' 
+                            .'<button type="button" id="'.$res['id_celula'].'" class="btn btn-default j_editar" data-toggle="modal" data-target="#modaleditar"><i class="glyphicon glyphicon-cog"></i> &nbsp;Editar</button>&nbsp;'
+                            .'<button type="button" id="'.$res['id_celula'].'" class="btn btn-danger excluir"><i class="glyphicon glyphicon-trash"></i> &nbsp;Excluir</button>'
+                            .'</td>'
+                            .'</tr>';
+                endwhile;
         }else{
-            echo 'noresult';
+                echo '<h3>NENHUMA CELULA CADASTRADA</h3>';
+            }
+        }else{
+            echo '<tr>'
+                 .'<td>Nenhum usuario emcontrado</td>'
+                 .'</tr>';
         }
+        
         
     break;
     
@@ -74,8 +105,9 @@ switch ($_POST['acao']){
     
     case 'lersuperior':
         
-        $value  = "Lider"; 
-        $query  = "SELECT * FROM rel_user WHERE nivel_id LIKE '%".$value."%' ";
+        $value  = "Lider";
+        $value2 = "Discipulador";
+        $query  = "SELECT * FROM rel_user WHERE (nivel_id LIKE '%".$value."%') OR (nivel_id LIKE '%".$value2."%') ";
         $st     = mysqli_query($conexao, $query) or die ('errosend');
         if(mysqli_num_rows($st) >=1){
             while($res = mysqli_fetch_assoc($st)):

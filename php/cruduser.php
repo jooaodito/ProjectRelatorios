@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once ('conexao.php');
 
 sleep(1);
@@ -34,26 +35,58 @@ switch ($_POST['acao']){
     break;
     
     case 'ler':
-
-        $query  = "SELECT * FROM rel_user ORDER BY nome_usuario ASC";
-        $st     = mysqli_query($conexao, $query) or die ('errosend');
-        if(mysqli_num_rows($st) >=1){
-            while($res = mysqli_fetch_assoc($st)):
-                echo    '<tr class="j_'.$res['id_usuario'].'">'
-                        .'<td>'.$res['id_usuario'].'</td>'
-                        .'<td>'.$res['nome_usuario'].'</td>'
-                        .'<td>'.$res['datanasc_usuario'].'</td>'
-                        .'<td>'.$res['nivel_id'].'</td>'
-                        .'<td>'.$res['rede_rede'].'</td>'
-                        .'<td>'.$res['lider_usuario'].'</td>'
-                        .'<td>' 
-                        .'<button type="button" id="'.$res['id_usuario'].'" class="btn btn-default j_editar" data-toggle="modal" data-target="#modaleditar"><i class="glyphicon glyphicon-cog"></i> &nbsp;Editar</button>&nbsp;'
-                        .'<button type="button" id="'.$res['id_usuario'].'" class="btn btn-danger excluir"><i class="glyphicon glyphicon-trash"></i> &nbsp;Excluir</button>'
-                        .'</td>'
-                        .'</tr>';
-            endwhile;
+        
+        $nivel = $_SESSION['nivel_id'];
+        $id = $_SESSION['id_usuario'];
+        
+        if(($nivel == "Admin") || ($nivel == "Pastor")){
+            $query  = "SELECT * FROM rel_user ORDER BY nome_usuario ASC";
+            $st     = mysqli_query($conexao, $query) or die ('errosend');
+            if(mysqli_num_rows($st) >=1){
+                while($res = mysqli_fetch_assoc($st)):
+                    echo    '<tr class="j_'.$res['id_usuario'].'">'
+                            .'<td>'.$res['id_usuario'].'</td>'
+                            .'<td>'.$res['nome_usuario'].'</td>'
+                            .'<td>'.$res['datanasc_usuario'].'</td>'
+                            .'<td>'.$res['nivel_id'].'</td>'
+                            .'<td>'.$res['rede_rede'].'</td>'
+                            .'<td>'.$res['lider_usuario'].'</td>'
+                            .'<td>'.$res['email_usuario'].'</td>'
+                            .'<td>' 
+                            .'<button type="button" id="'.$res['id_usuario'].'" class="btn btn-default j_editar" data-toggle="modal" data-target="#modaleditar"><i class="glyphicon glyphicon-cog"></i> &nbsp;Editar</button>&nbsp;'
+                            .'<button type="button" id="'.$res['id_usuario'].'" class="btn btn-danger excluir"><i class="glyphicon glyphicon-trash"></i> &nbsp;Excluir</button>'
+                            .'</td>'
+                            .'</tr>';
+                endwhile;
+            }else{
+                echo 'noresult';
+            }
+        }elseif (($nivel == "Lider") || ($nivel == "Discipulador")) {
+            $query  = "SELECT * FROM rel_user WHERE lider_usuario = '$id' ORDER BY nome_usuario ASC";
+            $st     = mysqli_query($conexao, $query) or die ('errosend');
+            if(mysqli_num_rows($st) >=1){
+                while($res = mysqli_fetch_assoc($st)):
+                    echo    '<tr class="j_'.$res['id_usuario'].'">'
+                            .'<td>'.$res['id_usuario'].'</td>'
+                            .'<td>'.$res['nome_usuario'].'</td>'
+                            .'<td>'.$res['datanasc_usuario'].'</td>'
+                            .'<td>'.$res['nivel_id'].'</td>'
+                            .'<td>'.$res['rede_rede'].'</td>'
+                            .'<td>'.$res['lider_usuario'].'</td>'
+                            .'<td>'.$res['email_usuario'].'</td>'
+                            .'<td>' 
+                            .'<button type="button" id="'.$res['id_usuario'].'" class="btn btn-default j_editar" data-toggle="modal" data-target="#modaleditar"><i class="glyphicon glyphicon-cog"></i> &nbsp;Editar</button>&nbsp;'
+                            .'<button type="button" id="'.$res['id_usuario'].'" class="btn btn-danger excluir"><i class="glyphicon glyphicon-trash"></i> &nbsp;Excluir</button>'
+                            .'</td>'
+                            .'</tr>';
+                endwhile;
+            }else{
+                echo 'noresult';
+            }
         }else{
-            echo 'noresult';
+            echo '<tr>'
+                 .'<td>Nenhum usuario emcontrado</td>'
+                 .'</tr>';
         }
         
     break;

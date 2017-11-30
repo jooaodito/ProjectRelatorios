@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once ('conexao.php');
 
 sleep(1);
@@ -31,22 +32,50 @@ switch ($_POST['acao']){
     
     case 'ler':
 
-        $query  = "SELECT * FROM rel_celula ORDER BY nome_celula ASC";
-        $st     = mysqli_query($conexao, $query) or die ('errosend');
-        if(mysqli_num_rows($st) >=1){
-            while($res = mysqli_fetch_assoc($st)):
-                echo    '<tr class="j_'.$res['id_celula'].'">'
-                        .'<td>'.$res['id_celula'].'</td>'
-                        .'<td>'.$res['nome_celula'].'</td>'
-                        .'<td>'.$res['rede_rede'].'</td>'
-                        .'<td>'.$res['id_lider'].'</td>'
-                        .'<td>' 
-                        .'<button type="button" id="'.$res['id_celula'].'" class="btn btn-success chamada"><i class="fa fa-check"></i> &nbsp;Fazer Chamada</button>'
-                        .'</td>'
-                        .'</tr>';
-            endwhile;
+        $nivel = $_SESSION['nivel_id'];
+        $id = $_SESSION['id_usuario'];
+        
+        if(($nivel == "Admin") || ($nivel == "Pastor")){
+            $query  = "SELECT * FROM rel_celula ORDER BY nome_celula ASC";
+            $st     = mysqli_query($conexao, $query) or die ('errosend');
+            if(mysqli_num_rows($st) >=1){
+                while($res = mysqli_fetch_assoc($st)):
+                    echo    '<tr class="j_'.$res['id_celula'].'">'
+                            .'<td>'.$res['id_celula'].'</td>'
+                            .'<td>'.$res['nome_celula'].'</td>'
+                            .'<td>'.$res['rede_rede'].'</td>'
+                            .'<td>'.$res['id_lider'].'</td>'
+                            .'<td>' 
+                            .'<button type="button" id="'.$res['id_lider'].'" class="btn btn-success lista" data-toggle="modal" data-target="#modallista"><i class="fa fa-check"></i> &nbsp;Fazer chamada</button>'
+                            .'</td>'
+                            .'</tr>';
+                endwhile;
+            }else{
+                echo 'noresult';
+            }
+            
+        }elseif (($nivel == "Lider") || ($nivel == "Discipulador")) {
+            $query  = "SELECT * FROM rel_celula WHERE id_lider = '$id' ORDER BY nome_celula ASC";
+            $st     = mysqli_query($conexao, $query) or die ('errosend');
+            if(mysqli_num_rows($st) >=1){
+                while($res = mysqli_fetch_assoc($st)):
+                    echo    '<tr class="j_'.$res['id_celula'].'">'
+                            .'<td>'.$res['id_celula'].'</td>'
+                            .'<td>'.$res['nome_celula'].'</td>'
+                            .'<td>'.$res['rede_rede'].'</td>'
+                            .'<td>'.$res['id_lider'].'</td>'
+                            .'<td>' 
+                            .'<a href="../pages/lista.php" type="button" class="btn btn-success lista"><i class="fa fa-check"></i> &nbsp;Fazer chamada</a>'
+                            .'</td>'
+                            .'</tr>';
+                endwhile;
         }else{
-            echo 'noresult';
+                echo '<h3>NENHUMA CELULA CADASTRADA</h3>';
+            }
+        }else{
+            echo '<tr>'
+                 .'<td>Nenhum usuario emcontrado</td>'
+                 .'</tr>';
         }
         
     break;
@@ -59,10 +88,7 @@ switch ($_POST['acao']){
     break;
 
     case 'consulta':
-        $idedit = $_POST['editarid'];
-        $query = "SELECT * FROM rel_nivel WHERE id_nivel = '$idedit'";
-        $st = mysqli_query($conexao, $query);
-        $ex = mysqli_fetch_assoc($st);
+        
         
     break;
     

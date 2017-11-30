@@ -10,7 +10,7 @@ if($btnLogin){
     if((!empty($usuario)) AND (!empty($senha))){
         
         //echo password_hash($senha, PASSWORD_DEFAULT)
-        $result_usuario = "SELECT id_usuario, email_usuario, senha_usuario, nome_usuario FROM rel_user WHERE email_usuario = '$usuario' ";
+        $result_usuario = "SELECT id_usuario, email_usuario, senha_usuario, nome_usuario, nivel_id FROM rel_user WHERE email_usuario = '$usuario' ";
         $resultado_usuario = mysqli_query($mysqli, $result_usuario);
         
         if($resultado_usuario){
@@ -20,6 +20,7 @@ if($btnLogin){
                 $_SESSION['id_usuario'] = $row_usuario['id_usuario'];
                 $_SESSION['nome_usuario'] = $row_usuario['nome_usuario'];
                 $_SESSION['email_usuario'] = $row_usuario['email_usuario'];
+                $_SESSION['nivel_id'] = $row_usuario['nivel_id'];
                 
                 header("location:../../pages/paineluser.php");
                 
@@ -36,5 +37,5 @@ if($btnLogin){
     
 } else {
     $_SESSION['msg'] = "Pagina não encontrada!";
-    header("location:../../index.php");
+    header("location:../index.php");
 }

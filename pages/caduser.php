@@ -1,4 +1,17 @@
 <!DOCTYPE html>
+<?php
+    session_start();
+    
+    if((!isset ($_SESSION['id_usuario']) == true)){
+        
+        unset($_SESSION['email_usuario']);
+        unset($_SESSION['senha_usuario']);
+        unset($_SESSION['nivel_id']);
+        $_SESSION['msg'] = "Área reistrita!";
+        header("location:../index.php");
+    }
+    
+?>
 <html>
     <head>
         <meta charset="UTF-8">
@@ -15,20 +28,22 @@
         <script src="../js/main.js"></script>
         <link rel="stylesheet" href="../css/main.css">
         
+        
         <!-- Font Awesome -->
         <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
                 
     </head>
+    
     <body style="background: #fff;">
-        <div class="header">
+        <script src="../php/menu.php" type="text/javascript" language="javascript"></script>
+        <div class="header container">
 			<div class="logo">
 				<i class="fa fa-tachometer"></i>
 				<span>Relatorios - ICB Marilia</span>
                                 
 			</div>
 			<a href="#" class="nav-trigger"><span></span></a>
-                        <a href="../index.php" class="btn btn-default"style="margin-left: 94%; margin-top:5px;"><i class="fa fa-power-off"></i>&nbsp; Sair</a>
-                        <button class="btn btn-default"style="margin-left: 88%; margin-top:-58px;"><i class="fa fa-user"></i>&nbsp; Perfil</button>
+                        <a href="../dist/php/sair.php" class="btn btn-default"style="float: right; margin-top:5px; margin-right: 0%;"><i class="fa fa-power-off"></i>&nbsp; Sair</a>
 		</div>
 		<div class="side-nav">
 			<div class="logo">
@@ -36,38 +51,15 @@
 				<span>Relatorios - ICB</span>
 			</div>
 			<nav>
-				<ul>
-					<li class="active">
-                                            <a href="paineluser.php">
-						<span><i class="fa fa-user"></i></span>
-						<span>Usuarios</span>
-                                            </a>
-					</li>
-					<li>
-                                            <a href="painelrede.php">
-						<span><i class="fa fa-sitemap"></i></span>
-						<span>Rede</span>
-                                            </a>
-					</li>
-					<li>
-                                            <a href="painelnivel.php">
-						<span><i class="fa fa-star-o"></i></span>
-						<span>Nivel</span>	
-                                            </a>
-					</li>
-					<li>
-                                            <a href="painelcelula.php">
-                                                <span><i class="fa fa-users"></i></span>
-						<span>Celulas</span>
-                                            </a>
-					</li>
-                                        <li>
-                                            <a href="painellista.php">
-                                                <span><i class="fa fa-list-alt"></i></span>
-						<span>Lista de chamada</span>
-                                            </a>
-					</li>
+                            <ul>
+                                <?php
+                                    include_once ("../php/menu.php");
+                                    echo $menu;
+                                ?>
 				</ul>
+                            <script>
+                                    
+                            </script>
 			</nav>
 		</div>
         <div class="main-content">
@@ -282,8 +274,9 @@
             </div>
         </div>
            
-        <script src="../js/cruduser.js" type="text/javascript"></script>
     </body>
+    
+        <script src="../js/cruduser.js" type="text/javascript"></script>
 </html>
 
 
